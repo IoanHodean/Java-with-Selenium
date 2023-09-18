@@ -10,7 +10,7 @@ import static util.TestUtil.generateRandomEmail;
 public class RegisterAccountTest {
     private WebDriver driver;
     private RegisterAccountPage registerAccountPage;
-    private String loginPageURL= "https://ecommerce-playground.lambdatest.io/index.php?route=account/register";
+        private String registerPageURL= "https://ecommerce-playground.lambdatest.io/index.php?route=account/register";
 
     @BeforeClass
     public void setUp() {
@@ -20,8 +20,8 @@ public class RegisterAccountTest {
 
     @BeforeMethod
     public void beforeMethod() {
-        System.out.println("Navigate to " + loginPageURL);
-        driver.get(loginPageURL);
+        System.out.println("Navigate to " + registerPageURL);
+        driver.get(registerPageURL);
         registerAccountPage= new RegisterAccountPage(driver);
     }
 

@@ -11,6 +11,8 @@ public class LoginPage extends BasePage{
     private By passwordInput=By.id("input-password");
     private By loginButton=By.xpath("//*[@id=\"content\"]/div/div[2]/div/div/form/input");
     private By warning=By.xpath(".//div[@class='alert alert-danger alert-dismissible']");
+    private By succesfulEmailSent=By.xpath("//*[@id=\"account-login\"]/div[1]");
+    private By forgottenPasswordHyperlink=By.xpath("//*[@id=\"content\"]/div/div[2]/div/div/form/div[2]/a");
 
     public void insertEmail(String email){
         driver.findElement(emailInput).sendKeys(email);
@@ -23,6 +25,12 @@ public void clickButton(){
 }
 public String warning(){
        return driver.findElement(warning).getText();
+}
+public void clickForgottenPasswordHyperlink(){
+        driver.findElement(forgottenPasswordHyperlink).click();
+}
+public String emailConfirmationLink(){
+        return driver.findElement(succesfulEmailSent).getText();
 }
 public void clear() {
         driver.findElement(emailInput).clear();
