@@ -1,7 +1,4 @@
-import org.example.ForgotPasswordPage;
-import org.example.LoginPage;
-import org.example.MyAccountPage;
-import org.example.RegisterAccountPage;
+import org.example.*;
 import org.openqa.selenium.WebDriver;
 
 import org.openqa.selenium.bidi.log.Log;
@@ -15,6 +12,7 @@ import org.testng.annotations.Test;
 public class LoginTest {
     private WebDriver driver;
     private LoginPage loginPage;
+    private LogoutPage logoutPage;
     private String loginPageURL= "https://ecommerce-playground.lambdatest.io/index.php?route=account/login";
 
     @BeforeClass
@@ -33,18 +31,18 @@ public class LoginTest {
     public void loginWithValidCredentialsTest(){
 
         driver.get(loginPageURL);
-        loginPage.insertEmail("hodean.ioan@gmail.com");
+        loginPage.insertEmail("hodean.ioan@gmail.net");
         loginPage.insertPassword("idunno");
         loginPage.clickButton();
         MyAccountPage myAccountPage=new MyAccountPage(driver);
-        String myAccount=myAccountPage.MyAccountText();
+        String myAccount=myAccountPage.myAccountText();
         Assert.assertEquals(myAccount,"My Account");
     }
     @Test
     public void loginWithInvalidCredentialsTest(){
 
         driver.get(loginPageURL);
-        loginPage.insertEmail("hodean.ioan@gmail.com");
+        loginPage.insertEmail("hodean.ioan@gmail.net");
         loginPage.insertPassword("iduno");
         loginPage.clickButton();
         String errorMessage=loginPage.warning();
@@ -61,7 +59,7 @@ public class LoginTest {
     @Test
     public void loginWithNoPasswordTest(){
         driver.get(loginPageURL);
-        loginPage.insertEmail("hodean.ioan@gmail.com");
+        loginPage.insertEmail("hodean.ioan@gmail..net");
         loginPage.clickButton();
         String errorMessage=loginPage.warning();
         Assert.assertEquals(errorMessage,"Warning: No match for E-Mail Address and/or Password.");
@@ -71,7 +69,7 @@ public class LoginTest {
         driver.get(loginPageURL);
         for (int i=0;i<5;i++) {
             loginPage.clear();
-            loginPage.insertEmail("hodean.ioan@gmail.com");
+            loginPage.insertEmail("hodean.ioan@gmail.net");
             loginPage.insertPassword("iduno");
             loginPage.clickButton();
         }
@@ -95,12 +93,37 @@ public class LoginTest {
         driver.get(loginPageURL);
         loginPage.clickForgottenPasswordHyperlink();
         ForgotPasswordPage forgotPasswordPage=new ForgotPasswordPage(driver);
-        forgotPasswordPage.insertEmail("hodean.ioan@gmail.com");
+        forgotPasswordPage.insertEmail("hodean.ioan@gmail..net");
         forgotPasswordPage.clickContinueButton();
         String expected=loginPage.emailConfirmationLink();
         Assert.assertEquals(expected,"An email with a confirmation link has been sent your email address.");
     }
-
+    @Test
+    public void logInLogOutFromNavBar() throws InterruptedException {
+        for (int i=0;i<5;i++) {
+            driver.get(loginPageURL);
+            loginPage.insertEmail("hodean.ioan@gmail.net");
+            loginPage.insertPassword("idunno");
+            loginPage.clickButton();
+            Thread.sleep(2000);
+            loginPage.clickLogOutFromNavBar();
+        }
+        logoutPage=new LogoutPage(driver);
+        Assert.assertEquals(logoutPage.getLogoutMessage(),"You have been logged off your account. It is now safe to leave the computer.");
+    }
+    @Test
+    public void logInLogOutFromColumnB() throws InterruptedException {
+        for (int i=0;i<5;i++) {
+            driver.get(loginPageURL);
+            loginPage.insertEmail("hodean.ioan@gmail.net");
+            loginPage.insertPassword("idunno");
+            loginPage.clickButton();
+            Thread.sleep(2000);
+            loginPage.clickLogOutFromColumn();
+        }
+        logoutPage=new LogoutPage(driver);
+        Assert.assertEquals(logoutPage.getLogoutMessage(),"You have been logged off your account. It is now safe to leave the computer.");
+    }
 @AfterTest
     public void close(){
         driver.quit();

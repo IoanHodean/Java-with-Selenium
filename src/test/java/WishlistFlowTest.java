@@ -1,12 +1,13 @@
 import org.example.RegisterAccountPage;
 import org.example.SearchResultPage;
 import org.example.WishlistPage;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import static util.TestUtil.generateRandomEmail;
 
@@ -15,26 +16,28 @@ public class WishlistFlowTest {
     private RegisterAccountPage registerAccountPage;
     private WishlistPage wishlistPage;
     private SearchResultPage searchResultPage;
+    Actions action;
+
 
     private String loginPageURL= "https://ecommerce-playground.lambdatest.io/index.php?route=account/register";
-
-    @BeforeClass
-    public void setUp() {
+@BeforeClass
+public void setUp(){
+    driver = new ChromeDriver();
+    registerAccountPage= new RegisterAccountPage(driver);
+    wishlistPage= new WishlistPage(driver);
+    searchResultPage= new SearchResultPage(driver);
+    action=new Actions(driver);
+}
+        @BeforeMethod
+    public void before() {
         System.out.println("Initialize driver.");
-        driver = new ChromeDriver();
-        registerAccountPage= new RegisterAccountPage(driver);
-        wishlistPage= new WishlistPage(driver);
-        searchResultPage= new SearchResultPage(driver);
-        driver.get("https://ecommerce-playground.lambdatest.io/index.php?route=account/register");
-        createAccount();
-    }
 
-    @BeforeMethod
-    public void beforeMethod() {
         System.out.println("Navigate to " + loginPageURL);
+        driver.get("https://ecommerce-playground.lambdatest.io/index.php?route=account/register");
     }
     @Test
-    public void addItemToWishList() throws InterruptedException {
+    public void addItemToWishlistFromProductPage() throws InterruptedException {
+        createAccount();
         wishlistPage.clickWishlist();
         String actualResult= wishlistPage.getNoResultsElementText();
         String expectedResult="No results!";
@@ -42,8 +45,126 @@ public class WishlistFlowTest {
         wishlistPage.enterTextSearch("Apple Cinema 30\"");
         wishlistPage.clickSearchButton();
         searchResultPage.clickFirstItem();
+        driver.findElement(By.xpath("//button[@title=\"Add to Wish List\"]")).click();        Thread.sleep(1000);
+        Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"notification-box-top\"]/div/div[2]/div[1]/p")).getText(),"Success: You have added\n" +
+                "Apple Cinema 30\"\n" +
+                "to your\n" +
+                "wish list\n" +
+                "!");
+    }
+    @Test
+    public void addItemToWishlistWithoutAccount() throws InterruptedException {
+        wishlistPage.enterTextSearch("Apple Cinema 30\"");
+        wishlistPage.clickSearchButton();
+        searchResultPage.clickFirstItem();
+        driver.findElement(By.xpath("//button[@title=\"Add to Wish List\"]")).click();
+        Thread.sleep(1000);
+        Assert.assertNotNull(driver.findElement(By.xpath("//*[@id=\"notification-box-top\"]/div")));
+
+    }
+    @Test
+    public void addItemToWishlistFromSearchPage() throws InterruptedException {
+        createAccount();
+        wishlistPage.enterTextSearch("Apple Cinema 30\"");
+        wishlistPage.clickSearchButton();
+        action.moveToElement(searchResultPage.FirstItem()).build().perform();
+        Thread.sleep(1000);
+        driver.findElement(By.xpath("//*[@id=\"entry_212469\"]/div/div[1]/div/div[1]/div[2]/button[2]")).click();
+        searchResultPage.clickWishlist();
+        Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"content\"]/div[1]/table/tbody/tr/td[2]/a")).getText(),"Apple Cinema 30\"");
+    }
+    @Test
+    public void addItemToWishListAndThenToCart() throws InterruptedException {
+        createAccount();
+        wishlistPage.enterTextSearch("imac");
+        wishlistPage.clickSearchButton();
+        action.moveToElement(searchResultPage.FirstItem()).build().perform();
+        Thread.sleep(1000);
+        driver.findElement(By.xpath("//*[@id=\"entry_212469\"]/div/div[1]/div/div[1]/div[2]/button[2]")).click();
+        searchResultPage.clickWishlist();
+        wishlistPage.clickAddToCartFirstItem();
+        Thread.sleep(1000);
+        Assert.assertEquals(wishlistPage.getNotificationText(),"Success: You have added\n" +
+                "iMac\n" +
+                "to your\n" +
+                "shopping cart\n" +
+                "!");
+    }
+    @Test
+    public void addItemToWishlistAndRemoveIt() throws InterruptedException {
+        createAccount();
+        wishlistPage.enterTextSearch("imac");
+        wishlistPage.clickSearchButton();
+        action.moveToElement(searchResultPage.FirstItem()).build().perform();
+        Thread.sleep(1000);
+        driver.findElement(By.xpath("//button[@title=\"Add to Wish List\"]")).click();
+        searchResultPage.clickWishlist();
+        wishlistPage.clickRemoveFromWishlistFirstItem();
+        Assert.assertEquals(wishlistPage.getSuccessAlert(),"Success: You have modified your wish list!\n" +
+                "×");
+    }
+    @Test
+    public void closeButtonSuccessfulModificationOfWishlist() throws InterruptedException {
+        //The assertion is that by closing the Alert div, div[1] of the page becomes the title
+        addItemToWishlistAndRemoveIt();
+        wishlistPage.clickCloseSuccessfulModification();
+        WebElement checkDiv=driver.findElement(By.xpath("//*[@id=\"account-wishlist\"]/div[1]/div[1]/h1"));
+       Assert.assertEquals(checkDiv.getText(), "My Wish List");
 
 
+    }
+    @Test
+    public void add5ItemsToWishlist() throws InterruptedException {
+        createAccount();
+        wishlistPage.enterTextSearch("imac");
+        wishlistPage.clickSearchButton();
+        for (int i=0;i<5;i++){
+            Thread.sleep(1000);
+            searchResultPage.clickXItem(i);
+            Thread.sleep(1000);
+            driver.findElement(By.xpath("//button[@title=\"Add to Wish List\"]")).click();
+            driver.navigate().back();
+        }
+        searchResultPage.clickWishlist();
+    Assert.assertNotNull(driver.findElement(By.xpath("//*[@id=\"content\"]/div[1]/table/tbody/tr[5]")));
+
+    }
+    @Test
+    public void AddAllItemsFromWishlistToCart() throws InterruptedException {
+       add5ItemsToWishlist();
+    int nr= wishlistPage.howManyItemsInWishlist();
+        System.out.println("There are "+nr+" products in Wishlist.");
+        for (int i=0;i<nr;i++){
+        driver.findElements(By.xpath("//*[@id=\"content\"]/div[1]/table/tbody/tr/td[6]/button")).get(i).click();
+    }
+        Thread.sleep(10000);
+        driver.get("https://ecommerce-playground.lambdatest.io/index.php?route=checkout/cart");
+        Assert.assertNotNull(driver.findElement(By.xpath("//*[@id=\"content\"]/form/div/table/tbody/tr["+nr+"]")));
+    }
+    @Test
+    public void RemoveAllItemsFromWishlistLastToFirst() throws InterruptedException {
+        add5ItemsToWishlist();
+        int nr= wishlistPage.howManyItemsInWishlist();
+        System.out.println("There are "+nr+" products in Wishlist.");
+        for (int i=nr-1;i>=0;i--){
+            driver.findElements(By.xpath("//*[@id=\"content\"]/div[1]/table/tbody/tr/td[6]/a")).get(i).click();
+        }
+        Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"content\"]/p")).getText(),"No results!");
+
+    }
+    @Test
+    public void RemoveAllItemsFromWishlistFirstToLast() throws InterruptedException {
+        add5ItemsToWishlist();
+        int nr= wishlistPage.howManyItemsInWishlist();
+        System.out.println("There are "+nr+" products in Wishlist.");
+        for (int i=0;i<5;i++){
+            driver.findElements(By.xpath("//*[@id=\"content\"]/div[1]/table/tbody/tr/td[6]/a")).get(0).click();
+        }
+        Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"content\"]/p")).getText(),"No results!");
+    }
+    @AfterTest
+    public void tearDown(){
+        driver.quit();
     }
     public void createAccount(){
         System.out.println("Creating new account to be use in tests...");
