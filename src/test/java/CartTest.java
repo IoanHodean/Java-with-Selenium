@@ -4,6 +4,7 @@ import org.example.SearchResultPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -39,7 +40,7 @@ SearchResultPage searchResultPage;
         driver.findElement(addToCartButton).click();
         driver.get(cartURL);
     }
-
+// ay
 
     @Test
     public void goToCheckout(){
@@ -58,8 +59,6 @@ SearchResultPage searchResultPage;
     public void tearDown(){
         driver.quit();
 }
-
-
 
 
 }
