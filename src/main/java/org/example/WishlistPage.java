@@ -3,7 +3,6 @@ package org.example;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
 
 import java.util.List;
 
@@ -13,13 +12,12 @@ public class WishlistPage extends BasePage {
 
     }
 
-    private By noResultsElement = By.xpath(".//div[@id='content']/p");
-    private By searchButton = By.xpath(".//button[@class='type-text']");
-    private By addToCartFirstItem=By.xpath("//*[@id=\"content\"]/div[1]/table/tbody/tr/td[6]/button");
-    private By removeFromCartFirstItem=By.xpath("//*[@id=\"content\"]/div[1]/table/tbody/tr/td[6]/a");
-    private By notificationsBoxTop=By.xpath("//*[@id='notification-box-top']/div/div/div/p");
-    private By successAlert=By.xpath("//*[@id=\"account-wishlist\"]/div[1]");
-    private By closeButtonSuccessAlert=By.xpath("//button[@class=\"close\"]");
+    private final By noResultsElement = By.xpath(".//div[@id='content']/p");
+    private final By searchButton = By.xpath(".//button[@class='type-text']");
+    private final By addToCartFirstItem = By.xpath("//*[@id=\"content\"]/div[1]/table/tbody/tr/td[6]/button");
+    private final By removeFromCartFirstItem = By.xpath("//*[@id=\"content\"]/div[1]/table/tbody/tr/td[6]/a");
+    private final By notificationsBoxTop = By.xpath("//*[@id='notification-box-top']/div/div/div/p");
+    private final By successAlert = By.xpath("//*[@id=\"account-wishlist\"]/div[1]");
 
     public String getNoResultsElementText() {
         return driver.findElement(noResultsElement).getText();
@@ -28,27 +26,28 @@ public class WishlistPage extends BasePage {
     public void clickSearchButton() {
         driver.findElement(searchButton).click();
     }
-    public void clickAddToCartFirstItem(){
+
+    public void clickAddToCartFirstItem() {
         driver.findElement(addToCartFirstItem).click();
     }
-    public String getNotificationText(){
+
+    public String getNotificationText() {
         return driver.findElement(notificationsBoxTop).getText();
     }
-    public void clickRemoveFromWishlistFirstItem(){
+
+    public void clickRemoveFromWishlistFirstItem() {
         driver.findElement(removeFromCartFirstItem).click();
     }
-    public String getSuccessAlert(){
+
+    public String getSuccessAlert() {
         return driver.findElement(successAlert).getText();
     }
-    public void clickCloseSuccessfulModification(){
-        driver.findElement(closeButtonSuccessAlert).click();
-    }
 
-    public int howManyItemsInWishlist(){
-        List<WebElement> list=driver.findElements(By.xpath("//*[@id=\"content\"]/div[1]/table/tbody/tr"));
+    public int howManyItemsInWishlist() {
+        List<WebElement> list = driver.findElements(By.xpath("//*[@id=\"content\"]/div[1]/table/tbody/tr"));
         return list.size();
-        }
     }
+}
 
 
 

@@ -11,7 +11,7 @@ public class SearchResultPage extends BasePage {
     }
 
 
-    private By resultItems = By.xpath(".//a[contains(@class,'text-ellipsis-2')]");
+    private final By resultItems = By.xpath(".//a[contains(@class,'text-ellipsis-2')]");
 
 
     public void clickFirstItem() throws InterruptedException {
@@ -23,16 +23,13 @@ public class SearchResultPage extends BasePage {
         Thread.sleep(2000);
         driver.findElements(resultItems).get(1).click();
     }
-    public WebElement FirstItem() throws InterruptedException{
+
+    public WebElement FirstItem() throws InterruptedException {
         Thread.sleep(1000);
         return driver.findElement(By.xpath("//*[@id=\"entry_212469\"]/div/div[1]"));
     }
-    public void choose50ShowItems(){
-         WebElement drpList= driver.findElement(By.xpath("//*[@id=\"input-limit-212463\"]"));
-         Select select=new Select(drpList);
-        select.selectByVisibleText("50");
-    }
-    public void clickXItem(int x){
+
+    public void clickXItem(int x) {
         driver.findElements(resultItems).get(x).click();
     }
 }
