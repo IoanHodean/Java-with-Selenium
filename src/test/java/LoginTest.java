@@ -63,18 +63,6 @@ public class LoginTest {
         String errorMessage = loginPage.warning();
         Assert.assertEquals(errorMessage, "Warning: No match for E-Mail Address and/or Password.");
     }
-     /*@Test
-    public void loginMultipleTimesTest(){
-        driver.get(loginPageURL);
-        for (int i=0;i<5;i++) {
-            loginPage.clear();
-            loginPage.insertEmail("hodean.ioan@gmail.net");
-            loginPage.insertPassword("iduno");
-            loginPage.clickButton();
-        }
-        String warning= loginPage.warning();
-        Assert.assertEquals(warning,"Warning: Your account has exceeded allowed number of login attempts. Please try again in 1 hour.");
-        }*/
 
     @Test
     public void forgottenPasswordInvalidEmail() {
@@ -93,7 +81,7 @@ public class LoginTest {
         driver.get(loginPageURL);
         loginPage.clickForgottenPasswordHyperlink();
         ForgotPasswordPage forgotPasswordPage = new ForgotPasswordPage(driver);
-        forgotPasswordPage.insertEmail("hodean.ioan@gmail..net");
+        forgotPasswordPage.insertEmail("hodean.ioan@gmail.net");
         forgotPasswordPage.clickContinueButton();
         String expected = loginPage.emailConfirmationLink();
         Assert.assertEquals(expected, "An email with a confirmation link has been sent your email address.");

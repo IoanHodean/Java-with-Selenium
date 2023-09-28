@@ -40,7 +40,7 @@ public class RegisterAccountTest {
         String actualText = accountCreatedPage.getParagraphText();
         String expectedText = "Congratulations! Your new account has been successfully created!";
         Assert.assertEquals(actualText, expectedText, "Actual text is not the expected one.");
-        loginPage.clickLogOutFromColumn();
+        loginPage.clickLogOutFromNavBar();
     }
 
 
@@ -212,7 +212,7 @@ public class RegisterAccountTest {
         String actualText = accountCreatedPage.getParagraphText();
         String expectedText = "Congratulations! Your new account has been successfully created!";
         Assert.assertEquals(actualText, expectedText, "Actual text is not the expected one.");
-        loginPage.clickLogOutFromColumn();
+        loginPage.clickLogOutFromNavBar();
     }
 
     @Test
@@ -232,7 +232,7 @@ public class RegisterAccountTest {
         String actualText = accountCreatedPage.getParagraphText();
         String expectedText = "Congratulations! Your new account has been successfully created!";
         Assert.assertEquals(actualText, expectedText, "Actual text is not the expected one.");
-        loginPage.clickLogOutFromColumn();
+        loginPage.clickLogOutFromNavBar();
     }
 
     @AfterTest
