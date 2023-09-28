@@ -4,7 +4,6 @@ import org.example.SearchResultPage;
 import org.example.WishlistPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
@@ -18,7 +17,6 @@ public class WishlistFlowTest {
     private WishlistPage wishlistPage;
     private SearchResultPage searchResultPage;
     private LoginPage loginPage;
-    String loginPageURL = "https://ecommerce-playground.lambdatest.io/index.php?route=account/register";
     Actions action;
 
 
@@ -46,11 +44,12 @@ public class WishlistFlowTest {
         searchResultPage.clickFirstItem();
         driver.findElement(By.xpath("//button[@title=\"Add to Wish List\"]")).click();
         Thread.sleep(1000);
-        Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"notification-box-top\"]/div/div[2]/div[1]/p")).getText(), "Success: You have added\n" +
-                "Apple Cinema 30\"\n" +
-                "to your\n" +
-                "wish list\n" +
-                "!");
+        Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"notification-box-top\"]/div/div[2]/div[1]/p")).getText(), """
+                Success: You have added
+                Apple Cinema 30"
+                to your
+                wish list
+                !""");
         Thread.sleep(10000);
         loginPage.clickLogOutFromNavBar();
     }
