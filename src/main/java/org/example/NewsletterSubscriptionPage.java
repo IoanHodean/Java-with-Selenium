@@ -11,8 +11,6 @@ public class NewsletterSubscriptionPage extends BasePage {
     private final By subscribeButtonYes = By.xpath("//*[@id=\"content\"]/form/fieldset/div/div/div[1]/label");
     private final By subscribeButtonNo = By.xpath("//*[@id=\"content\"]/form/fieldset/div/div/div[2]/label");
     private final By continueButton = By.xpath("//*[@id=\"content\"]/form/div/div[2]/input");
-    private final By backButton = By.xpath("//*[@id=\"content\"]/form/div/div[1]/a");
-
     public void clickSubscribeRadioButtonYes() {
         driver.findElement(subscribeButtonYes).click();
     }
