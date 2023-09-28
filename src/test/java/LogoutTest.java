@@ -12,28 +12,29 @@ public class LogoutTest {
     private WebDriver driver;
     private LoginPage loginPage;
     private LogoutPage logoutPage;
-    private String loginPageURL= "https://ecommerce-playground.lambdatest.io/index.php?route=account/login";
+    private String loginPageURL = "https://ecommerce-playground.lambdatest.io/index.php?route=account/login";
 
     @BeforeClass
     public void setUp() {
         System.out.println("Initialize driver.");
         driver = new ChromeDriver();
         driver.get(loginPageURL);
-        loginPage=new LoginPage(driver);
+        loginPage = new LoginPage(driver);
         loginPage.insertEmail("hodean.ioan@gmail.net");
         loginPage.insertPassword("idunno");
         loginPage.clickButton();
         loginPage.clickLogOutFromColumn();
-        logoutPage=new LogoutPage(driver);
+        logoutPage = new LogoutPage(driver);
     }
+
     @Test
-    public void continueButtonTest(){
-    logoutPage.clickContinue();
-        Assert.assertEquals(driver.getCurrentUrl(),"https://ecommerce-playground.lambdatest.io/index.php?route=common/home");
+    public void continueButtonTest() {
+        logoutPage.clickContinue();
+        Assert.assertEquals(driver.getCurrentUrl(), "https://ecommerce-playground.lambdatest.io/index.php?route=common/home");
     }
 
     @AfterTest
-    public void close(){
+    public void close() {
         driver.quit();
     }
 

@@ -19,7 +19,7 @@ public class WishlistPage extends BasePage {
     private By removeFromCartFirstItem=By.xpath("//*[@id=\"content\"]/div[1]/table/tbody/tr/td[6]/a");
     private By notificationsBoxTop=By.xpath("//*[@id='notification-box-top']/div/div/div/p");
     private By successAlert=By.xpath("//*[@id=\"account-wishlist\"]/div[1]");
-    private By closeButtonSuccessAlert=By.xpath("//*[@id=\"account-wishlist\"]/div[1]/button");
+    private By closeButtonSuccessAlert=By.xpath("//button[@class=\"close\"]");
 
     public String getNoResultsElementText() {
         return driver.findElement(noResultsElement).getText();
@@ -45,13 +45,8 @@ public class WishlistPage extends BasePage {
     }
 
     public int howManyItemsInWishlist(){
-        int nr=0;
-
         List<WebElement> list=driver.findElements(By.xpath("//*[@id=\"content\"]/div[1]/table/tbody/tr"));
-        nr=list.size();
-
-
-        return nr;
+        return list.size();
         }
     }
 

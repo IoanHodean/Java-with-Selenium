@@ -4,9 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 public class CompareTest {
     private SearchResultPage searchResultPage;
@@ -16,10 +14,10 @@ public class CompareTest {
     public By searchButton = By.xpath("//*[@id=\"search\"]/div[2]/button");
     public By compareIcon = By.xpath("//*[@id=\"entry_217823\"]/a");
     public String homepage = "https://ecommerce-playground.lambdatest.io/index.php?route=common/home";
-    private By compareClick = By.xpath("//*[@id=\"entry_216844\"]/button");
+    private final By compareClick = By.xpath("//*[@id=\"entry_216844\"]/button");
 
-    private By addToCartFirstItem = By.xpath("//*[@id=\"content\"]/table/tbody[3]/tr/td[2]/input");
-    private By addToCartSecondItem = By.xpath("//*[@id=\"content\"]/table/tbody[3]/tr/td[3]/input");
+    private final By addToCartFirstItem = By.xpath("//*[@id=\"content\"]/table/tbody[3]/tr/td[2]/input");
+    private final By addToCartSecondItem = By.xpath("//*[@id=\"content\"]/table/tbody[3]/tr/td[3]/input");
 
     @BeforeClass
     public void setUp() {
@@ -27,11 +25,11 @@ public class CompareTest {
         driver = new ChromeDriver();
         searchResultPage = new SearchResultPage(driver);
         comparePage = new ComparePage(driver);
-        driver.get(homepage);
     }
 
-    @Test
+    @Test(priority = 2)
     public void CompareTwoProducts() throws InterruptedException {
+        driver.get(homepage);
         driver.findElement(searchInput).sendKeys("Apple Cinema 30\"");
         driver.findElement(searchButton).click();
         searchResultPage.clickFirstItem();
@@ -44,21 +42,10 @@ public class CompareTest {
         Assert.assertNotNull(addToCartSecondItem);
     }
 
-    @Test
-    public void CompareWithNoProducts() {
-        driver.findElement(compareIcon).click();
-        Assert.assertEquals(comparePage.getNoProductText(), "You have not chosen any products to compare.");
-    }
 
-    @Test
-    public void ComparePageContinueButtonTest() {
-        driver.findElement(compareIcon).click();
-        comparePage.clickContinueButton();
-        Assert.assertEquals(driver.getCurrentUrl(), "https://ecommerce-playground.lambdatest.io/index.php?route=common/home");
-    }
-
-    @Test
+    @Test(priority = 2)
     public void CompareAndAddToCart() throws InterruptedException {
+        driver.get(homepage);
         driver.findElement(searchInput).sendKeys("iphone");
         driver.findElement(searchButton).click();
         searchResultPage.clickFirstItem();
@@ -74,8 +61,9 @@ public class CompareTest {
         Assert.assertNotNull(driver.findElement(By.xpath("//*[@id=\"content\"]/form/div/table/tbody/tr[2]/td[1]/a/img")));
     }
 
-    @Test
+    @Test(priority = 2)
     public void CompareAndRemoveItems() throws InterruptedException {
+        driver.get(homepage);
         driver.findElement(searchInput).sendKeys("iphone");
         driver.findElement(searchButton).click();
         searchResultPage.clickFirstItem();
@@ -86,27 +74,43 @@ public class CompareTest {
         searchResultPage.clickFirstItem();
         driver.findElement(compareClick).click();
         driver.findElement(compareIcon).click();
-        comparePage.removeFromCompareItems();
+        comparePage.removeItems();
         Assert.assertNotNull(comparePage.getNoProductText());
     }
 
-    @Test
+    @Test(priority = 2)
     public void CompareAndRemoveSomeItemsAddToCartOtherItems() throws InterruptedException {
         //this test adds four items in compare, eliminate the first two and add the other two to the cart
+        driver.get(homepage);
         String[] list = {"iphone", "imac", "samsung", "htc"};
-        for (int i = 0; i < list.length; i++) {
-            driver.findElement(searchInput).sendKeys(list[i]);
+        for (String s : list) {
+            driver.findElement(searchInput).sendKeys(s);
             driver.findElement(searchButton).click();
             searchResultPage.clickFirstItem();
             driver.findElement(compareClick).click();
             driver.findElement(searchInput).clear();
         }
         driver.findElement(compareIcon).click();
-        comparePage.removeFromCompareItems();
+        comparePage.removeItems(2);
         comparePage.addToCartItems();
         driver.get("https://ecommerce-playground.lambdatest.io/index.php?route=checkout/cart");
         //the assertion is that the second item in cart in present
         Assert.assertNotNull(driver.findElement(By.xpath("//*[@id=\"content\"]/form/div/table/tbody/tr[2]/td[1]/a/img")));
+    }
+
+    @Test(priority = 1)
+    public void CompareWithNoProducts() {
+        driver.get(homepage);
+        driver.findElement(compareIcon).click();
+        Assert.assertEquals(comparePage.getNoProductText(), "You have not chosen any products to compare.");
+    }
+
+    @Test(priority = 1)
+    public void ComparePageContinueButtonTest() {
+        driver.get(homepage);
+        driver.findElement(compareIcon).click();
+        comparePage.clickContinueButton();
+        Assert.assertEquals(driver.getCurrentUrl(), "https://ecommerce-playground.lambdatest.io/index.php?route=common/home");
     }
 
     @AfterTest

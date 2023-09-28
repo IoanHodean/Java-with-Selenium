@@ -21,7 +21,7 @@ private By postcodeInput=By.id("input-postcode");
 private By defaultAddressYesButton=By.xpath("//*[@id=\"content\"]/form/fieldset/div[10]/div/div[1]/label/input");
 private By defaultAddressNoButton=By.xpath("//*[@id=\"content\"]/form/fieldset/div[10]/div/div[2]/label/input");
 private By continueButton=By.xpath("//*[@id=\"content\"]/form/div/div[2]/input");
-private By countryWarningSelector=By.xpath("//*[@id=\"content\"]/form/fieldset/div[8]/div/div");
+private By countryWarningSelector=By.xpath("//*[@class=\"text-danger\"]");
 
 
 public void insertFirstName(String firstname){
@@ -64,8 +64,8 @@ public void checkDefaultAddressYes(){
     public void clickContinueButton(){
     driver.findElement(continueButton).click();
     }
-public String getCountryWarning(){
-    return driver.findElement(countryWarningSelector).getText();
+public boolean getCountryWarning(){
+    return driver.findElement(countryWarningSelector).isDisplayed();
 }
 
 }
