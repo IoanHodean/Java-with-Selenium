@@ -1,5 +1,6 @@
 import org.example.*;
 import org.openqa.selenium.WebDriver;
+import util.CSVReader;
 
 import org.openqa.selenium.bidi.log.Log;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -14,13 +15,16 @@ public class LoginTest {
     private LoginPage loginPage;
     private LogoutPage logoutPage;
     private final String loginPageURL = "https://ecommerce-playground.lambdatest.io/index.php?route=account/login";
-
+    String[] data = CSVReader.getData("src/main/java/util/testData.csv", 1);
+    String username = data[0];
+    String password = data[1];
     @BeforeClass
     public void setUp() {
         System.out.println("Initialize driver.");
         driver = new ChromeDriver();
         loginPage = new LoginPage(driver);
         System.out.println("Navigate to " + loginPageURL);
+
     }
 
     @Test(priority = 2)
@@ -28,7 +32,7 @@ public class LoginTest {
 
         driver.get(loginPageURL);
         loginPage.insertEmail("hodean.ioan@gmail.net");
-        loginPage.insertPassword("idunno");
+        loginPage.insertPassword("iduno");
         loginPage.clickButton();
         MyAccountPage myAccountPage = new MyAccountPage(driver);
         String myAccount = myAccountPage.myAccountText();
@@ -39,8 +43,8 @@ public class LoginTest {
     public void loginWithInvalidCredentialsTest() {
 
         driver.get(loginPageURL);
-        loginPage.insertEmail("hodean.ioan@gmail.net");
-        loginPage.insertPassword("iduno");
+        loginPage.insertEmail(username);
+        loginPage.insertPassword(password);
         loginPage.clickButton();
         String errorMessage = loginPage.warning();
         Assert.assertEquals(errorMessage, "Warning: No match for E-Mail Address and/or Password.");
